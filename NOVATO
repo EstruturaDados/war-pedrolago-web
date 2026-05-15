@@ -37,3 +37,16 @@ int main() {
 }
 
 
+printf ("\n=== TERRITORIOS CADASTRADOS ===\n\n");
+
+for(i = 0; i < 5; i++) {
+    printf("Territorio %d: \n" , i+1);
+    printf(" Nome: %s\n" , territorios[i].nome);
+    printf(" Cor do exercito: %s\n", terrritorios[i].cor);
+    printf(" Quantdade de tropas: %d\n", territorios[i].tropas);
+    printf("-------------\n");
+}
+
+return 0;
+
+}
