@@ -26,5 +26,14 @@ int main() {
         territorios[i].nome[strcspn(territorios[1].nome, "\n")] = 0;
 
         printf("Cor do exercito: ");
-        
+        fgets(territorios[i].cor, 10, stdin);
+        territorios[i].cor[strcspn(territorios[i].cor, "\n")] = 0;
+
+        printf("Quantidade de Tropas: ");
+        scanf("%d", &territorios[i].tropas);
+
+        printf("\n");
+
 }
+
+
