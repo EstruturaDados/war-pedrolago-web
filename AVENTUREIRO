@@ -1,0 +1,97 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+
+struct Territorio {
+    char nome[30];
+    char cor[10];
+    int tropas;
+};
+
+// Protótipos das funções
+void cadastrarTerritorios(struct Territorio* mapa, int quantidade);
+void exibirTerritorios(struct Territorio* mapa, int quantidade);
+void atacar(struct Territorio* atacante, struct Territorio* defensor);
+void liberarMemoria(struct Territorio* mapa);
+int selecionarTerritorio(struct Territorio* mapa, int quantidade, const char* mensagem, const char* corAtacante);
+
+int main() {
+    struct Territorio* territorios;
+    int quantidade;
+    int atacanteIdx, defensorIdx;
+    
+    // Inicializa o gerador de números aleatórios
+    srand(time(NULL));
+    
+    printf("=== SISTEMA DE WAR - SIMULADOR DE BATALHAS ===\n\n");
+    
+    // Solicita a quantidade de territórios
+    printf("Quantos territorios deseja cadastrar? ");
+    scanf("%d", &quantidade);
+    getchar(); // Limpa o buffer
+    
+    // Aloca memória dinamicamente para os territórios
+    territorios = (struct Territorio*)calloc(quantidade, sizeof(struct Territorio));
+    
+    // Verifica se a alocação foi bem-sucedida
+    if (territorios == NULL) {
+        printf("Erro ao alocar memória!\n");
+        return 1;
+    }
+    
+    // Cadastra os territórios
+    cadastrarTerritorios(territorios, quantidade);
+    
+    // Exibe os territórios cadastrados
+    exibirTerritorios(territorios, quantidade);
+    
+    // Menu de ataques
+    char continuar = 's';
+    while (continuar == 's' || continuar == 'S') {
+        printf("\n=== SIMULAÇÃO DE ATAQUE ===\n");
+        
+        // Seleciona o território atacante
+        atacanteIdx = selecionarTerritorio(territorios, quantidade, 
+                                           "Selecione o territorio ATACANTE", NULL);
+        
+        // Seleciona o território defensor (não pode ser da mesma cor)
+        defensorIdx = selecionarTerritorio(territorios, quantidade, 
+                                           "Selecione o territorio DEFENSOR", 
+                                           territorios[atacanteIdx].cor);
+        
+        // Realiza o ataque
+        printf("\n--- BATALHA: %s (%s) vs %s (%s) ---\n",
+               territorios[atacanteIdx].nome, territorios[atacanteIdx].cor,
+               territorios[defensorIdx].nome, territorios[defensorIdx].cor);
+        
+        atacar(&territorios[atacanteIdx], &territorios[defensorIdx]);
+        
+        // Exibe o resultado atualizado
+        printf("\n=== SITUAÇÃO APÓS O ATAQUE ===\n");
+        printf("ATACANTE: %s - Cor: %s - Tropas: %d\n",
+               territorios[atacanteIdx].nome, territorios[atacanteIdx].cor, 
+               territorios[atacanteIdx].tropas);
+        printf("DEFENSOR: %s - Cor: %s - Tropas: %d\n",
+               territorios[defensorIdx].nome, territorios[defensorIdx].cor, 
+               territorios[defensorIdx].tropas);
+        
+        // Pergunta se deseja continuar
+        printf("\nDeseja realizar outro ataque? (s/n): ");
+        scanf(" %c", &continuar);
+        getchar();
+    }
+    
+    // Exibe o estado final dos territórios
+    printf("\n=== ESTADO FINAL DOS TERRITÓRIOS ===\n");
+    exibirTerritorios(territorios, quantidade);
+    
+    // Libera a memória alocada
+    liberarMemoria(territorios);
+    
+    printf("\nPrograma encerrado. Memória liberada com sucesso!\n");
+    
+    return 0;
+}
+
+
